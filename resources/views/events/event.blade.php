@@ -79,7 +79,7 @@
 
                         <div class="form-group">
                     		<label for="InterestedServices">Interested Services</label><br>
-                    		<?php $services=\App\Models\Service::OrderBy('id')->take(4)->get(); ?>
+                    		<?php $services=\App\Models\Service::OrderBy('id')->take(5)->get(); ?>
                     		@foreach($services as $service)
                     	<span class="checkbox-input">
                     		<input type="checkbox" class="form-check-input" name="service_id[]" value="{{$service->s_name}}"> 

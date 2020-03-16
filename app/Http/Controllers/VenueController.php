@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;        
 use Illuminate\Support\Facades\Validator;
 use App\Models;
-use App\Models\Event2;
+use App\Models\Venue;
 use App\Models\Service;
 
-class EventController extends Controller
+
+class VenueController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,11 +19,8 @@ class EventController extends Controller
      */
     public function index()
     {
-
-        $events = \App\Models\Event2::all();
-
-
-        return view('events.event', compact('events'));
+        $venues=\App\Models\Venue::OrderBy('v_location')->get();
+        return view('venues.venue')->with('venues',$venues);
     }
 
     /**
@@ -32,7 +30,7 @@ class EventController extends Controller
      */
     public function create()
     {
-        return view('events.event');
+        //
     }
 
     /**
@@ -43,35 +41,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //validate
-      $rules = [
-        'e_date'        =>'required|date|unique:event2s',
-        'e_name'        =>'required',
-        'catagory_id'   =>'required',
-      ];
-
-      $validator = Validator::make($request->all(), $rules);
-
-      if ($validator->fails()) {
-          return redirect()->back()->withErrors($validator)->withInput();
-      }
-
-      //insert to database
-      \App\Models\Event2::create([
-          'e_date'              => $request->input('e_date'),
-          'e_name'              => $request->input('e_name'),
-          'e_desc'              => $request->input('e_desc'),
-          'catagory_id'         => $request->input('catagory_id'),
-          'service_id'          => implode(',',$request->service_id),
-
-      ]);
-
-      //redirect
-      session()->flash('type', 'success');
-      session()->flash('message', 'Event create Successfully');
-
-      return redirect()->route('venues.index');
-
+        //
     }
 
     /**
@@ -82,7 +52,8 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //
+        $venues=\App\Models\Venue::where('id',$id)->first();
+        return view('venues.venueDetails')->with('venues',$venues);
     }
 
     /**
@@ -117,5 +88,16 @@ class EventController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function search()
+    {
+        $v_location = $_GET['v_location'];
+
+    $venues = \App\Models\Venue::where([ 
+        ['v_location', 'LIKE', '%' . $v_location . '%'],
+    ])->get();
+
+    return view('venues.venue', compact('venues'));
     }
 }

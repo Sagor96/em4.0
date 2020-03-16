@@ -12,7 +12,8 @@
 
   <!-- Bootstrap core CSS -->
   <link href="{{asset('frontends/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
   <!-- Ajax core -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <!-- Custom fonts for this template -->
@@ -117,6 +118,7 @@
                 <a class="dropdown-item" href="#">Decoration</a>
                 <a class="dropdown-item" href="#">Entertainment</a>
                 <a class="dropdown-item" href="#">Transport</a>
+                <a class="dropdown-item" href="{{route('venues.index')}}">Venue</a>
               </div>
             </li>
 

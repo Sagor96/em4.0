@@ -39,5 +39,12 @@ class ServiceTableSeeder extends Seeder
         	's_desc'	=>'All type of Transports',
         ]);
         $service->save();
+
+        $service= new \App\Models\Service([
+            's_name'    =>'Venue',
+            'slug'      =>'Venue',
+            's_desc'    =>'All type of Venues',
+        ]);
+        $service->save();
     }
 }

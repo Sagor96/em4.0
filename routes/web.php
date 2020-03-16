@@ -35,3 +35,6 @@ Route::apiresource('foods', 'FoodController');
 Route::get('/food/list', 'FoodController@getIndex')->name('foods.getIndex');
 Route::get('/add-to-cart/{id}', 'FoodController@getAddCart')->name('foods.getAddCart');
 Route::get('/shopping-cart', 'FoodController@getShopCart')->name('foods.getShopCart');
+//Venue
+Route::resource('venues', 'VenueController');
+Route::get('/venue/search', 'VenueController@search')->name('venues.search');
