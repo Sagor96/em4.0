@@ -1,5 +1,7 @@
 @extends('layouts.front')
 
+@section('title','Registration')
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -69,6 +71,8 @@
                             </div>
                         </div>
                     </form>
+                    <p>You have already any account?</p>
+                    <a href="/login" class="btn btn-dark">Log in</a>
                 </div>
             </div>
         </div>
