@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             //forein keys
             //$table->foreign('role_id')->references('id')->on('roles');
         });
+        DB::table('users')->insert(['name'=>'admin','email'=>'admin@em.com','password'=>'123456']);
 
     }
 

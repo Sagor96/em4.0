@@ -1,24 +1,27 @@
 @extends('layouts.dash')
 
-@section('title','Venues')
+@section('title','Services')
 
-@section('header','Venues List')
+@section('header','Services List')
 
 @section('main-content')
 
 <section class="content">
       <div class="row">
         <div class="col-md-6">
-          <h1 style="display: inline-block;">Venues List</h1>
+          <h1 style="display: inline-block;">Services List</h1>
         </div>
         <div class="col-md-6">
           <div class="add-new">
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#eModalSm">
-              Add New Venue
+              Add New Service
             </button>
           </div>
         </div>
       </div>
+      <hr>
+      <hr>
+
    <!-- Main content -->
 
   <div class="row p-3">
@@ -39,31 +42,35 @@
                   <thead>
                     <tr>
                         <th>SL</th>
-                        <th>Venue</th>
-                        <th>Address</th>
+                        <th>Service</th>
+                        <th>Slug</th>
+                        <th>Details</th>
                         <th>Price</th>
+                        <th>Weight</th>
                         <th>Action</th>
                     </tr>
                   </thead>
 
                   <tbody>
-                        <?php $i=1; ?>
-                    @foreach($venues as $e)
+                    <?php $i=1; ?>
+                    @foreach($services as $s)
                     <tr>
                         <td>{{ $i++}}</td>
-                        <td>{{ $e->service->name }}</td>
-                        <td>{{ $e->v_addr }}</td>
-                        <td>{{ $e->service->price }}</td>
+                        <td>{{ $s->name }}</td>
+                        <td>{{ $s->slug }}</td>
+                        <td>{{ $s->details }}</td>
+                        <td>{{ $s->price }}Tk</td>
+                        <td>{{ $s->weight }}kg</td>
                         <td>
                         <div class=" action">
-                        <a href="{{ route('venues.edit', $e->id)}}" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp;Edit </a>
+                        <a href="{{ route('services.edit', $s->id)}}" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> &nbsp;Edit </a>
                         <span>
                           <style type="text/css">
                             .myform{
                               display: inline;
                             }
                           </style>
-                          <form class="myform" action="{{ route('venues.destroy', $e->id) }}" method="post" onsubmit="return confirm('Are you sure?')">
+                          <form class="myform" action="{{ route('services.destroy', $s->id) }}" method="post" onsubmit="return confirm('Are you sure?')">
                               @csrf
                               @method('DELETE')
                               <button type="submit" class="btn btn-danger float-left"><i class="fa fa-trash" aria-hidden="true"></i> &nbsp;Delete</button>
@@ -99,13 +106,13 @@
 
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title w-100" id="myModalLabel">New Venue</h4>
+        <h4 class="modal-title w-100" id="myModalLabel">New Service</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form role="form" action="{{ route('venues.store') }}" method="post">
+        <form role="form" action="{{ route('services.store') }}" method="post">
               @csrf
 
               @if ($errors->any())
@@ -127,30 +134,39 @@
                       {{ session('message') }}
                   </div>
               @endif
-              <div class="box-body">
-                  <div class="form-group">
-                      <label for="VenueName">Venue Name</label>
-                      <select name="service_id" class="form-control">
-            <!-- <option selected="selected" >---Select a Hosting Type---</option> -->
-            <?php 
-            $slug='venue';
-            $services=\App\Models\Service::where('slug',$slug)->get(); ?>
-              @foreach($services as $service)
-              <option value="{{ $service->id }}">{{ $service->name }}</option>
-              @endforeach
-
-            </select>
-                  </div>
-                  <div class="form-group">
-                      <label for="v_addr">Address</label>
-                      <input type="text" class="form-control" id="v_addr" placeholder="" name="v_addr" value="{{ old('v_addr') }}">
-                  </div>
-              </div>
+      <div class="box-body">
+          <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Name" name="name" value="{{ old('name') }}">
+          </div>
+          <div class="form-group">
+              <label for="slug">Slug</label>
+              <select name ="slug" class="form-control">
+                        <option value="venue">Venue</option>
+                        <option value="food">Food</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="flower">Flower</option>
+                        <option value="light">Light</option>
+                      </select>
+          </div>
+          <div class="form-group">
+              <label for="details">Details</label>
+              <input type="text" class="form-control" id="details" placeholder="Details" name="details" value="{{ old('details') }}">
+          </div>
+          <div class="form-group">
+              <label for="price">Price</label>
+              <input type="text" class="form-control" id="price" placeholder="Price" name="price" value="{{ old('price') }}">
+          </div>
+          <div class="form-group">
+              <label for="weight">Weight</label>
+              <input type="text" class="form-control" id="weight" placeholder="Weight" name="weight" value="{{ old('weight') }}">
+          </div>
+                 </div>
                 <!-- /.box-body -->
 
                 <div class="box-footer">
 
-                <button type="submit" class="btn btn-success">Save</button>
+                  <button type="submit" class="btn btn-success">Save</button>
 
                 </div>
             </form>

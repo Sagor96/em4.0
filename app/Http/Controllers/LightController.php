@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models;
 
-class VenueController extends Controller
+class LightController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class VenueController extends Controller
     public function index()
     {
         $data = [];
-        $data['venues'] = \App\Models\Venue::with('service')->select('id','service_id','v_addr')->orderBy('id')->get();
-             return view('venues.venue', $data);
+        $data['lights'] = \App\Models\Light::with('service')->select('id','l_type','service_id')->orderBy('id')->get();
+             return view('lights.light', $data);
     }
 
     /**
@@ -27,10 +27,10 @@ class VenueController extends Controller
      */
     public function create()
     {
+        $slug='light';
         $data = [];
-        $slug='venue';
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
-        return view('venues.venue', $data);
+        return view('flowers.flower', $data);
     }
 
     /**
@@ -41,11 +41,11 @@ class VenueController extends Controller
      */
     public function store(Request $request)
     {
-         //validate 
+        //validate 
         $rules = [
 
+            'l_type'         => 'required',
             'service_id'    => 'required',
-            'v_addr'         => 'required'
 
         ];
 
@@ -56,14 +56,15 @@ class VenueController extends Controller
         }
 
         
-        \App\Models\Venue::create([
+        \App\Models\Light::create([
+            'l_type'        => $request->input('l_type'),
             'service_id'    => $request->input('service_id'),
-            'v_addr' => $request->input('v_addr'),
+            
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue added Successfully');
+        session()->flash('message', 'Light added Successfully');
 
         return redirect()->back();
     }
@@ -87,13 +88,13 @@ class VenueController extends Controller
      */
     public function edit($id)
     {
-        $slug='venue';
+         $slug='light';
         $data = [];
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
 
-        $data['venues'] = \App\Models\Venue::select('id','service_id', 'v_addr')->find($id);
+        $data['lights'] = \App\Models\Light::select('id','l_type','service_id')->find($id);
 
-        return view('venues.venueEdit', $data);
+        return view('lights.lightEdit', $data);
     }
 
     /**
@@ -105,10 +106,12 @@ class VenueController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
         //validate
         $rules = [
+            'l_type'       => 'required',
             'service_id'       => 'required',
-            'v_addr'       => 'required',
+            
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -118,15 +121,16 @@ class VenueController extends Controller
         }
 
         //insert to database
-        $fl = \App\Models\Venue::find($id);
+        $fl = \App\Models\Light::find($id);
         $fl->update([
-            'service_id'          => $request->input('service_id'),
-            'v_addr'               => $request->input('v_addr'),
+            'l_type'               => $request->input('l_type'),
+            'service_id'            => $request->input('service_id'),
+            
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Updated Successfully.');
+        session()->flash('message', 'Light Updated Successfully.');
 
         return redirect()->back();
     }
@@ -139,12 +143,12 @@ class VenueController extends Controller
      */
     public function destroy($id)
     {
-        $Venue = \App\Models\Venue::find($id);
-        $Venue->delete();
+        $Light = \App\Models\Light::find($id);
+        $Light->delete();
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Deleted Successfully.');
+        session()->flash('message', 'Light Deleted Successfully.');
 
         return redirect()->back();
     }

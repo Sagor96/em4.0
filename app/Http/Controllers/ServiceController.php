@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models;
 
-class VenueController extends Controller
+class ServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class VenueController extends Controller
     public function index()
     {
         $data = [];
-        $data['venues'] = \App\Models\Venue::with('service')->select('id','service_id','v_addr')->orderBy('id')->get();
-             return view('venues.venue', $data);
+        $data['services'] = \App\Models\Service::select('id','name','slug','details','price','weight')->orderBy('id')->get();
+        return view('services.service', $data);
     }
 
     /**
@@ -28,9 +28,7 @@ class VenueController extends Controller
     public function create()
     {
         $data = [];
-        $slug='venue';
-        $data['services'] = \App\Models\Service::where('slug',$slug)->get();
-        return view('venues.venue', $data);
+        return view('services.service', $data);
     }
 
     /**
@@ -41,12 +39,13 @@ class VenueController extends Controller
      */
     public function store(Request $request)
     {
-         //validate 
+        //validate
         $rules = [
-
-            'service_id'    => 'required',
-            'v_addr'         => 'required'
-
+            'name'          => 'required',
+            'slug'          => 'required',
+            'details'       => 'required',
+            'price'         => 'required|integer',
+            'weight'         => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -55,15 +54,18 @@ class VenueController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        
-        \App\Models\Venue::create([
-            'service_id'    => $request->input('service_id'),
-            'v_addr' => $request->input('v_addr'),
+        //insert to database
+        \App\Models\Service::create([
+            'name'       => $request->input('name'),
+            'slug'       => $request->input('slug'),
+            'details'    => $request->input('details'),
+            'price'      => $request->input('price'),
+            'weight'     => $request->input('weight'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue added Successfully');
+        session()->flash('message', 'Service added Successfully');
 
         return redirect()->back();
     }
@@ -76,7 +78,8 @@ class VenueController extends Controller
      */
     public function show($id)
     {
-        //
+        $services=\App\Models\Service::where('id',$id)->firstOrFail();
+    return view('services.serviceShow')->with('services',$services);
     }
 
     /**
@@ -87,13 +90,9 @@ class VenueController extends Controller
      */
     public function edit($id)
     {
-        $slug='venue';
         $data = [];
-        $data['services'] = \App\Models\Service::where('slug',$slug)->get();
-
-        $data['venues'] = \App\Models\Venue::select('id','service_id', 'v_addr')->find($id);
-
-        return view('venues.venueEdit', $data);
+        $data['services'] = \App\Models\Service::select('id','name','slug','details','price','weight')->orderBy('id')->find($id);
+        return view('services.serviceEdit', $data);
     }
 
     /**
@@ -107,8 +106,11 @@ class VenueController extends Controller
     {
         //validate
         $rules = [
-            'service_id'       => 'required',
-            'v_addr'       => 'required',
+            'name'       => 'required',
+            'slug'       => 'required',
+            'details'       => 'required',
+            'price'         => 'required',
+            'weight'         => 'required'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -118,15 +120,18 @@ class VenueController extends Controller
         }
 
         //insert to database
-        $fl = \App\Models\Venue::find($id);
-        $fl->update([
-            'service_id'          => $request->input('service_id'),
-            'v_addr'               => $request->input('v_addr'),
+        $services = \App\Models\Service::find($id);
+        $services->update([
+            'name'       => $request->input('name'),
+            'slug'       => $request->input('slug'),
+            'details'    => $request->input('details'),
+            'price'      => $request->input('price'),
+            'weight'     => $request->input('weight'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Updated Successfully.');
+        session()->flash('message', 'Service Updated Successfully.');
 
         return redirect()->back();
     }
@@ -139,12 +144,12 @@ class VenueController extends Controller
      */
     public function destroy($id)
     {
-        $Venue = \App\Models\Venue::find($id);
-        $Venue->delete();
+        $service = \App\Models\Service::find($id);
+        $service->delete();
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Deleted Successfully.');
+        session()->flash('message', 'Service Deleted Successfully.');
 
         return redirect()->back();
     }

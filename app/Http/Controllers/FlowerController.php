@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models;
 
-class VenueController extends Controller
+class FlowerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class VenueController extends Controller
     public function index()
     {
         $data = [];
-        $data['venues'] = \App\Models\Venue::with('service')->select('id','service_id','v_addr')->orderBy('id')->get();
-             return view('venues.venue', $data);
+        $data['flowers'] = \App\Models\Flower::with('service')->select('id','service_id','color')->orderBy('id')->get();
+             return view('flowers.flower', $data);
     }
 
     /**
@@ -27,10 +27,10 @@ class VenueController extends Controller
      */
     public function create()
     {
+        $slug='flower';
         $data = [];
-        $slug='venue';
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
-        return view('venues.venue', $data);
+        return view('flowers.flower', $data);
     }
 
     /**
@@ -41,11 +41,11 @@ class VenueController extends Controller
      */
     public function store(Request $request)
     {
-         //validate 
+        //validate 
         $rules = [
 
             'service_id'    => 'required',
-            'v_addr'         => 'required'
+            'color'         => 'required'
 
         ];
 
@@ -56,14 +56,14 @@ class VenueController extends Controller
         }
 
         
-        \App\Models\Venue::create([
+        \App\Models\Flower::create([
             'service_id'    => $request->input('service_id'),
-            'v_addr' => $request->input('v_addr'),
+            'color' => $request->input('color'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue added Successfully');
+        session()->flash('message', 'Flower added Successfully');
 
         return redirect()->back();
     }
@@ -87,13 +87,13 @@ class VenueController extends Controller
      */
     public function edit($id)
     {
-        $slug='venue';
+        $slug='flower';
         $data = [];
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
 
-        $data['venues'] = \App\Models\Venue::select('id','service_id', 'v_addr')->find($id);
+        $data['flowers'] = \App\Models\Flower::select('id','service_id', 'color')->find($id);
 
-        return view('venues.venueEdit', $data);
+        return view('flowers.flowerEdit', $data);
     }
 
     /**
@@ -108,7 +108,7 @@ class VenueController extends Controller
         //validate
         $rules = [
             'service_id'       => 'required',
-            'v_addr'       => 'required',
+            'color'       => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -118,15 +118,15 @@ class VenueController extends Controller
         }
 
         //insert to database
-        $fl = \App\Models\Venue::find($id);
+        $fl = \App\Models\Flower::find($id);
         $fl->update([
             'service_id'          => $request->input('service_id'),
-            'v_addr'               => $request->input('v_addr'),
+            'color'               => $request->input('color'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Updated Successfully.');
+        session()->flash('message', 'Flower Updated Successfully.');
 
         return redirect()->back();
     }
@@ -139,13 +139,20 @@ class VenueController extends Controller
      */
     public function destroy($id)
     {
-        $Venue = \App\Models\Venue::find($id);
-        $Venue->delete();
+        $Flower = \App\Models\Flower::find($id);
+        $Flower->delete();
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Deleted Successfully.');
+        session()->flash('message', 'Flower Deleted Successfully.');
 
         return redirect()->back();
+    }
+
+    public function client()
+    {
+        $data = [];
+        $data['flowers'] = \App\Models\Flower::with('service')->select('id','service_id','color')->orderBy('id')->get();
+             return view('flowers.flowerShow', $data);
     }
 }

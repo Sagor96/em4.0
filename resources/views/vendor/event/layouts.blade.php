@@ -23,7 +23,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
           <ul class="nav navbar-nav">
             <li><a href="{{url('event')}}">Event Calender</a></li>
-            <li><a href="{{url('event-list')}}">Event List</a></li>
+            <li><a href="#">Booking Block</a></li>
           </ul>
         </div>
       </div>

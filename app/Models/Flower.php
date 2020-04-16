@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Venue extends Model
+class Flower extends Model
 {
-    protected $fillable = ['service_id', 'v_addr'];
+    protected $fillable = ['service_id', 'color'];
 
     //Many to many
     public function service(){

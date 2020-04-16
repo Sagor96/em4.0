@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models;
 
-class VenueController extends Controller
+class EquipmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +15,11 @@ class VenueController extends Controller
      */
     public function index()
     {
+        
         $data = [];
-        $data['venues'] = \App\Models\Venue::with('service')->select('id','service_id','v_addr')->orderBy('id')->get();
-             return view('venues.venue', $data);
+        $data['equipments'] = \App\Models\Equipment::with('service')->select('id','service_id','provider')->orderBy('id')->get();
+             return view('equipments.equipment', $data);
+    
     }
 
     /**
@@ -27,10 +29,10 @@ class VenueController extends Controller
      */
     public function create()
     {
+        $slug='equipment';
         $data = [];
-        $slug='venue';
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
-        return view('venues.venue', $data);
+        return view('equipments.equipment', $data);
     }
 
     /**
@@ -41,11 +43,11 @@ class VenueController extends Controller
      */
     public function store(Request $request)
     {
-         //validate 
+        //validate 
         $rules = [
 
             'service_id'    => 'required',
-            'v_addr'         => 'required'
+            'provider'         => 'required'
 
         ];
 
@@ -56,14 +58,14 @@ class VenueController extends Controller
         }
 
         
-        \App\Models\Venue::create([
+        \App\Models\Equipment::create([
             'service_id'    => $request->input('service_id'),
-            'v_addr' => $request->input('v_addr'),
+            'provider' => $request->input('provider'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue added Successfully');
+        session()->flash('message', 'Equipment added Successfully');
 
         return redirect()->back();
     }
@@ -87,13 +89,13 @@ class VenueController extends Controller
      */
     public function edit($id)
     {
-        $slug='venue';
+        $slug='equipment';
         $data = [];
         $data['services'] = \App\Models\Service::where('slug',$slug)->get();
 
-        $data['venues'] = \App\Models\Venue::select('id','service_id', 'v_addr')->find($id);
+        $data['equipments'] = \App\Models\Equipment::select('id','service_id', 'provider')->find($id);
 
-        return view('venues.venueEdit', $data);
+        return view('equipments.equipmentEdit', $data);
     }
 
     /**
@@ -108,7 +110,7 @@ class VenueController extends Controller
         //validate
         $rules = [
             'service_id'       => 'required',
-            'v_addr'       => 'required',
+            'provider'       => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -118,17 +120,18 @@ class VenueController extends Controller
         }
 
         //insert to database
-        $fl = \App\Models\Venue::find($id);
+        $fl = \App\Models\Equipment::find($id);
         $fl->update([
             'service_id'          => $request->input('service_id'),
-            'v_addr'               => $request->input('v_addr'),
+            'provider'               => $request->input('provider'),
         ]);
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Updated Successfully.');
+        session()->flash('message', 'Equipment Updated Successfully.');
 
         return redirect()->back();
+
     }
 
     /**
@@ -139,12 +142,12 @@ class VenueController extends Controller
      */
     public function destroy($id)
     {
-        $Venue = \App\Models\Venue::find($id);
-        $Venue->delete();
+        $Equipment = \App\Models\Equipment::find($id);
+        $Equipment->delete();
 
         //redirect
         session()->flash('type', 'success');
-        session()->flash('message', 'Venue Deleted Successfully.');
+        session()->flash('message', 'Equipment Deleted Successfully.');
 
         return redirect()->back();
     }

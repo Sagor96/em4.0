@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Session;
-use App\Cart;
+use Illuminate\Support\Facades\Validator;
 use App\Models;
-use App\Models\Food;
 
 class FoodController extends Controller
 {
@@ -15,26 +13,11 @@ class FoodController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getIndex()
-    {
-        $foods= Food::all();
-        return view('foods.foodList',['foods'=>$foods]);
-    }
-
-public function getAddCart(Request $request,$id)
-    {
-        $food= Food::find($id);
-        $oldCart=Session::has('cart')? Session::get('cart'):null;
-        $cart=new Cart($oldCart);
-        $cart->add($food,$food->id);
-        $request->session()->put('cart',$cart);
-        return redirect()->back();
-    }
-
-
     public function index()
     {
-        //
+        $data = [];
+        $data['foods'] = \App\Models\Food::with('service')->select('id','m_type','dishtype_id','service_id')->orderBy('id')->get();
+             return view('foods.food', $data);
     }
 
     /**
@@ -44,7 +27,10 @@ public function getAddCart(Request $request,$id)
      */
     public function create()
     {
-        //
+        $slug='food';
+        $data = [];
+        $data['services'] = \App\Models\Service::where('slug',$slug)->get();
+        return view('foods.food', $data);
     }
 
     /**
@@ -55,7 +41,32 @@ public function getAddCart(Request $request,$id)
      */
     public function store(Request $request)
     {
-        //
+        //validate 
+        $rules = [
+            'm_type'    => 'required',
+            'dishtype_id'    => 'required',
+            'service_id'    => 'required',
+
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        
+        \App\Models\Food::create([
+            'm_type'    => $request->input('m_type'),
+            'dishtype_id'    => $request->input('dishtype_id'),
+            'service_id'    => $request->input('service_id'),
+        ]);
+
+        //redirect
+        session()->flash('type', 'success');
+        session()->flash('message', 'Food added Successfully');
+
+        return redirect()->back();
     }
 
     /**
@@ -77,7 +88,13 @@ public function getAddCart(Request $request,$id)
      */
     public function edit($id)
     {
-        //
+        $slug='food';
+        $data = [];
+        $data['services'] = \App\Models\Service::where('slug',$slug)->get();
+
+        $data['foods'] = \App\Models\Food::select('id','m_type','dishtype_id','service_id')->find($id);
+
+        return view('foods.foodEdit', $data);
     }
 
     /**
@@ -89,7 +106,35 @@ public function getAddCart(Request $request,$id)
      */
     public function update(Request $request, $id)
     {
-        //
+         //validate
+        $rules = [
+            'm_type'         => 'required',
+            'dishtype_id'    => 'required',
+            'service_id'     => 'required',
+
+            
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        //insert to database
+        $fl = \App\Models\Food::find($id);
+        $fl->update([
+            'm_type'          => $request->input('m_type'),
+            'dishtype_id'          => $request->input('dishtype_id'),
+            'service_id'          => $request->input('service_id'),
+            
+        ]);
+
+        //redirect
+        session()->flash('type', 'success');
+        session()->flash('message', 'Food Updated Successfully.');
+
+        return redirect()->back();
     }
 
     /**
@@ -100,6 +145,13 @@ public function getAddCart(Request $request,$id)
      */
     public function destroy($id)
     {
-        //
+         $Food = \App\Models\Food::find($id);
+        $Food->delete();
+
+        //redirect
+        session()->flash('type', 'success');
+        session()->flash('message', 'Food Deleted Successfully.');
+
+        return redirect()->back();
     }
 }

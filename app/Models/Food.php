@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Food extends Model
 {
-    protected $fillable = ['imagePath', 'f_title','service_id','f_desc','qty','price',];
+     protected $fillable = ['m_type','dishtype_id','service_id'];
+
+    //Many to many
+    public function service(){
+    	return $this->belongsTo(Service::class);
+    }
 }
