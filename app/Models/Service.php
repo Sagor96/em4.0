@@ -46,4 +46,10 @@ class Service extends Model implements Buyable
         return $this->hasMany(Food::class);
     }
 
+    //Many to many
+    public function books()
+    {
+        return $this->belongsToMany('App\Models\Book');
+    }
+
 }

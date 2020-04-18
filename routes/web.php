@@ -53,6 +53,10 @@ Route::resource('books', 'BookingController');
 Route::apiResource('books', 'BookingController');
 Route::delete('/cart/{id}', 'BookingController@destroy');
 
+//Book
+Route::resource('books', 'BookController');
+Route::apiResource('books', 'BookController');
+
 //CartEquipment
 Route::resource('cartequipments', 'CartEquipmentController');
 Route::apiResource('cartequipments', 'CartEquipmentController');

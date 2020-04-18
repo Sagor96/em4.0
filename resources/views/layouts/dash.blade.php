@@ -67,8 +67,8 @@
             <a class="dropdown-item" href="{{ route('cartlights.index')}}">Light</a>
             <a class="dropdown-item" href="{{ route('foods.index')}}">Food</a>
             <a class="dropdown-item" href="{{ route('cartflowers.index')}}">Flower</a>
-            <a class="dropdown-item" href="{{ route('bookvenues.create')}}">Bookings Approvals</a>
-            <a class="dropdown-item" href="#">User Profiles</a>
+            <a class="dropdown-item" href="{{ route('books.create')}}">Bookings Approvals</a>
+            <a class="dropdown-item" href="{{route('books.index')}}">User Profiles</a>
           </div>
         </li>
         <li class="nav-item">

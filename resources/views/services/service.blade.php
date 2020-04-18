@@ -147,6 +147,7 @@
                         <option value="equipment">Equipment</option>
                         <option value="flower">Flower</option>
                         <option value="light">Light</option>
+                        <option value="cake">Cake</option>
                       </select>
           </div>
           <div class="form-group">
